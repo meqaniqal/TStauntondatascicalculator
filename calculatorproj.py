@@ -9,7 +9,7 @@
 # 4/19/2023
 
 
-# In[2]:
+# In[58]:
 
 
 def strip_point_zero(num):
@@ -18,13 +18,21 @@ def strip_point_zero(num):
        param: num: the number to process
        returns num as string that has integer format if possible.
     """
-    # initialize negative flag
-    neg=False
+    # if more than one decimal point, return '0'
+    if str(num).count('.')>1:
+        return '0'
+    
+    # turn non numbers into zeroes 
+    # (remove the negative sign if exists so neg nums are not interpreted as non-numbers)
+    if not str(num).replace('-','').replace('.','').isdigit():
+        return '0'
     # make the number a float if it isn't already.
     fltnum=float(num)
     # Get the zero case out of the way
     if fltnum==0:
         return '0'
+    # initialize negative flag
+    neg=False
     # turn negative numbers positive for processing. neg flag will ensure the result is 
     # turned back into a negative number later.
     if fltnum<0:
@@ -42,9 +50,6 @@ def strip_point_zero(num):
         # tack the neg symbol back on after processing if the number was negative
         if neg:
             processednum='-'+processednum
-        return processednum
-    
-    
     return processednum
     ''' previous method:
     numsplit=str(num).split('.')
@@ -75,7 +80,7 @@ def calculate(operation,*args):
     to perform the arithmetic operation upon.
     """
     # initialize outputstring
-    # this will be built based on the operator
+    # this will be built based on the chosen operator
     outputstr=''
     # this gives the inner list of numbers
     arglist=args[0]
@@ -85,7 +90,7 @@ def calculate(operation,*args):
     
     # get first number
     result=arglistflt[0]
-    # this gets the string value of the chosen operation
+    # this gets the string value of the chosen operation to make the following if statements more readable
     operator=options_list[operation]
     
     if operator=='Add':
@@ -126,9 +131,9 @@ def calculate(operation,*args):
     return outputstr+resultstr
 
 
-# In[15]:
+# main program:
 
-
+# main menu, choose an operation.
 options_list=['Add','Subtract','Multiply','Divide']
 print(('-'*10)+' Python Calculator '+('-'*10)+'\n')
 print('Select calculation.\n')
@@ -143,15 +148,13 @@ while True:
         break
 
 
-# In[9]:
+# input numbers to perform calculations on.
 
 
 while True:
         numbers=input(f'Enter at least 2 numbers to {options_list[option].lower()} separated by commas: ')
         try:
             numberslist=[strip_point_zero(float(num)) for num in numbers.split(',')]
-            
-
         except Exception as e:
             print(e)
             print('Just numbers, please (integer or float). Try again')
@@ -159,22 +162,14 @@ while True:
         else:
             # str(numberslist).strip('[]') converts list to string and strips off sq brackets
             # and also do not display integers as floats (followed by '.0'):
-            # also, get rid of quotation marks.
+            # also, get rid of quotation marks and -0
             print('you entered: '+ str(numberslist).strip('[]').replace("'",'').replace("'",'').replace('-0','-'))
             if len(numberslist)<2:
                 print('You need to enter at least 2 numbers. Please try again.')
             else:
                 break
-
-
-# In[16]:
-
-
+                
+# Perform and display the results of the calculation
 print(calculate(option,numberslist))
-
-
-# In[ ]:
-
-
 
 
